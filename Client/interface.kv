@@ -1,0 +1,25 @@
+
+<LoginScreen>:
+    f_username: username
+    f_password: password
+    txt_inpt: txt_inpt
+    GridLayout:
+        rows:
+        cols: 2
+        padding: 10
+        spacing: 10
+        Label:
+            text: 'Username:'
+
+        TextInput:
+            id: txt_inpt
+            text: f_but.state
+            on_text: root.check_status(f_but)
+        Label:
+            text: 'Password:'
+        TextInput:
+            id: password
+            password: True
+        Button:
+            text: 'Button'
+            id: f_but
