@@ -43,7 +43,7 @@ class ThreadedServer(Thread):
             client, address = self.sock.accept()
 
             # Definir tempo limite
-            #client.settimeout(self.timeout)
+            client.settimeout(self.timeout)
 
             if self.debug:
                 print(datetime.now())
@@ -68,6 +68,8 @@ class ThreadedServer(Thread):
                         print('CLIENT Data Recebido', client)
                         print('Data:')
                         print(data)
+                        if (data) == "Connected":
+                            print("Sucess")
                         if(data) == "break":
                             break
                         #pprint(data, width=1)
@@ -94,6 +96,9 @@ class ThreadedServer(Thread):
                     print('CLIENT Desconectado:', client, '\n')
                 client.close()
                 return False
+class commands():
+    def key_conection(self):
+        print("")
 
 
 if __name__ == "__main__":

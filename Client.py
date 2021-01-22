@@ -7,18 +7,26 @@ from threading import Thread
 #InterFace Gráfica Kivy
 from kivy.app import App
 from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.properties import (NumericProperty, ReferenceListProperty, ObjectProperty)
 from kivy.vector import Vector
 from kivy.clock import Clock
 
+global login
+global password
 class conection():
-	def __init__(self):
-		# Iniciando o TCP/IP socket
-		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	print("Inicando Socket")
+	# Iniciando o TCP/IP socket
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-		# Conectando Socket
-		server_address = ('localhost', 8008)
-		self.sock.connect(server_address)
+	# Conectando Socket
+	server_address = ('localhost', 8008)
+	sock.connect(server_address)
+
+	conection_key = ""
+
+
 	def msg_send(self,msg):
 		# Envia Mensagem
 		self.sock.send(bytes(msg,'utf_8'))
@@ -26,17 +34,88 @@ class conection():
 		res = self.sock.recv(1024)
 		data = res.decode('utf_8')
 
+	def get_conn(self,login,password):
+		print("Login:",str(login))
+		print("Password:", str(password))
 
-class LoginScreen(Widget):
-    username = ObjectProperty(None)
+class widgets():
+	def add_widget(self,name):
+		switcher = {
+			"Login": LoginScreen,
+			"Connected": Connected
+		}
+		try:
+			self.manager.add_widget(switcher.get(name, "Erro")(name=name))
+		except:
+			print("problema ao adicionar Widget ",name)
+	def remove_widget(self,remov):
+		janelas = widgets.list_widgets(self)
+		try:
+			b = janelas.index(remov)
+			self.manager.remove_widget(self.manager.get_screen(remov))
+		except ValueError:
+			print("Problema ao Remover Widget não existe ",remov)
+	def list_widgets(self):
+		screens = self.manager.screen_names
+		print("Screens:", str(screens))
+		return screens
 
-    def check_status(self, btn):
-        print('button state is: {state}'.format(state=btn.state))
-        print('text input text is: {txt}'.format(txt=self.txt_inpt))
 
+
+class LoginScreen(Screen):
+	print("Starting")
+	login = ObjectProperty()
+	def Login(self,login,password):
+		print("Login:",login)
+		print("Pass:",password)
+		if(str(login) == "test" and str(password) == "123"):
+			conection.msg_send(conection,"Connected")
+			widgets.add_widget(self, "Connected")
+			widgets.remove_widget(self,"Login")
+			print("Connected")
+
+		else:
+			return LoginScreen()
+		print("Ending")
+
+class Login(Screen):
+    def do_login(self, loginText, passwordText):
+        app = App.get_running_app()
+        app.username = loginText
+        app.password = passwordText
+
+        self.manager.transition = SlideTransition(direction="left")
+        self.manager.current = 'connected'
+
+        app.config.read(app.get_application_config())
+        app.config.write()
+    def resetForm(self):
+        self.ids['login'].text = ("")
+        self.ids['password'].text = ("")
+
+class Connected(Screen):
+
+    def disconnect(self):
+        self.manager.transition = SlideTransition(direction="right")
+        self.manager.current = 'login'
+        self.manager.get_screen('login').resetForm()
 
 class Interface(App):
-    kv_directory = 'Client'
+	kv_directory = 'Client'
+
+	def build(self):
+		self.manager = ScreenManager()
+		widgets.add_widget(self,"Login")
+		'''
+		self.manager.add_widget(LoginScreen(name='login'))
+		self.manager.add_widget(Connected(name='connected'))'''
+
+
+
+		return self.manager
+
+
+
 
 if __name__ == '__main__':
     Interface().run()

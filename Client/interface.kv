@@ -1,25 +1,103 @@
 
-<LoginScreen>:
-    f_username: username
-    f_password: password
-    txt_inpt: txt_inpt
-    GridLayout:
-        rows:
-        cols: 2
-        padding: 10
-        spacing: 10
-        Label:
-            text: 'Username:'
+<LoginScreen>:  # every class in your app can be represented by a rule like
+    login: login
+    password: password
+    BoxLayout
+        id: login_layout
+        orientation: 'vertical'
+        padding: [10,50,10,50]
+        spacing: 50
 
-        TextInput:
-            id: txt_inpt
-            text: f_but.state
-            on_text: root.check_status(f_but)
         Label:
-            text: 'Password:'
-        TextInput:
-            id: password
-            password: True
+            text: 'Welcome'
+            font_size: 32
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'Login'
+                font_size: 18
+                halign: 'left'
+                text_size: root.width-20, 20
+
+            TextInput:
+                id: login
+                multiline:False
+                font_size: 28
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: 'Password'
+                halign: 'left'
+                font_size: 18
+                text_size: root.width-20, 20
+
+            TextInput:
+                id: password
+                multiline:False
+                password:True
+                font_size: 28
+
         Button:
-            text: 'Button'
-            id: f_but
+            text: 'Connexion'
+            font_size: 24
+            on_press: root.Login(login.text, password.text)
+<Login>:
+    login: login
+    password: password
+    BoxLayout
+        id: login_layout
+        orientation: 'vertical'
+        padding: [10,50,10,50]
+        spacing: 50
+
+        Label:
+            text: 'Welcome'
+            font_size: 32
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'Login'
+                font_size: 18
+                halign: 'left'
+                text_size: root.width-20, 20
+
+            TextInput:
+                id: login
+                multiline:False
+                font_size: 28
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: 'Password'
+                halign: 'left'
+                font_size: 18
+                text_size: root.width-20, 20
+
+            TextInput:
+                id: password
+                multiline:False
+                password:True
+                font_size: 28
+
+        Button:
+            text: 'Connexion'
+            font_size: 24
+
+            on_press: root.do_login(login.text, password.text)
+<Connected>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            text: "You are now connected"
+            font_size: 32
+        Button:
+            text: "Disconnect"
+            font_size: 24
+            on_press: root.disconnect()
