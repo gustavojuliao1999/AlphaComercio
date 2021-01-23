@@ -8,10 +8,13 @@ from threading import Thread
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.actionbar import ActionBar
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.properties import (NumericProperty, ReferenceListProperty, ObjectProperty)
 from kivy.vector import Vector
 from kivy.clock import Clock
+from kivy.lang import Builder
 
 global login
 global password
@@ -40,12 +43,15 @@ class conection():
 
 class widgets():
 	def add_widget(self,name):
+
 		switcher = {
 			"Login": LoginScreen,
+			"Menu": Menu,
 			"Connected": Connected
 		}
 		try:
 			self.manager.add_widget(switcher.get(name, "Erro")(name=name))
+
 		except:
 			print("problema ao adicionar Widget ",name)
 	def remove_widget(self,remov):
@@ -63,6 +69,7 @@ class widgets():
 
 
 class LoginScreen(Screen):
+
 	print("Starting")
 	login = ObjectProperty()
 	def Login(self,login,password):
@@ -99,16 +106,18 @@ class Connected(Screen):
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
         self.manager.get_screen('login').resetForm()
+class Menu(Screen):
+	def screens(self):
+		screens = widgets.list_widgets()
 
 class Interface(App):
 	kv_directory = 'Client'
 
 	def build(self):
-		self.manager = ScreenManager()
-		widgets.add_widget(self,"Login")
-		'''
-		self.manager.add_widget(LoginScreen(name='login'))
-		self.manager.add_widget(Connected(name='connected'))'''
+		#self.manager = ScreenManager()
+		#widgets.add_widget(self, "Menu")
+		#widgets.add_widget(self,"Login")
+
 
 
 
